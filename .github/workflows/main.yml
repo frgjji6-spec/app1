@@ -20,16 +20,21 @@ jobs:
         distribution: 'temurin'
 
     - name: Unzip project
-      run: unzip Voice_Social_App_1.0.0.zip
+      run: unzip -o Voice_Social_App_1.0.0.zip
 
     - name: Make gradlew executable
-      run: chmod +x kayan_voice/android/gradlew
+      run: |
+        find . -name gradlew -exec chmod +x {} \;
 
     - name: Build APK
-      run: cd kayan_voice/android && ./gradlew assembleDebug
+      run: |
+        GRADLEW_PATH=$(find . -name gradlew)
+        DIR_PATH=$(dirname "$GRADLEW_PATH")
+        cd "$DIR_PATH"
+        ./gradlew assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: app-debug
-        path: kayan_voice/android/app/build/outputs/apk/debug/app-debug.apk
+        path: "**/app/build/outputs/apk/debug/app-debug.apk"
