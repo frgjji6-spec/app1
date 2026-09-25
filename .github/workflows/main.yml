@@ -19,13 +19,15 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Install Gradle
-      run: sudo apt-get update && sudo apt-get install -y gradle
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.5'
 
     - name: Unzip project
       run: unzip -o Voice_Social_App_1.0.0.zip
 
-    - name: Build APK with System Gradle
+    - name: Build APK
       run: |
         BUILD_FILE=$(find . -name "build.gradle" -o -name "build.gradle.kts" | head -n 1)
         DIR_PATH=$(dirname "$BUILD_FILE")
