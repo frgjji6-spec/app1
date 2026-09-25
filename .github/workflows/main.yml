@@ -19,22 +19,21 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Install Gradle
+      run: sudo apt-get update && sudo apt-get install -y gradle
+
     - name: Unzip project
       run: unzip -o Voice_Social_App_1.0.0.zip
 
-    - name: Make gradlew executable
+    - name: Build APK with System Gradle
       run: |
-        find . -name gradlew -exec chmod +x {} \;
-
-    - name: Build APK
-      run: |
-        GRADLEW_PATH=$(find . -name gradlew)
-        DIR_PATH=$(dirname "$GRADLEW_PATH")
+        BUILD_FILE=$(find . -name "build.gradle" -o -name "build.gradle.kts" | head -n 1)
+        DIR_PATH=$(dirname "$BUILD_FILE")
         cd "$DIR_PATH"
-        ./gradlew assembleDebug
+        gradle assembleDebug --no-daemon
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
-        path: "**/app/build/outputs/apk/debug/app-debug.apk"
+        path: "**/*.apk"
